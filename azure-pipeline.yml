@@ -1,0 +1,39 @@
+trigger:
+  - main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  - group: terraform-variables
+
+steps:
+- task: TerraformInstaller@0
+  inputs:
+    terraformVersion: 'latest'
+
+- task: TerraformTaskV4@4
+  inputs:
+    provider: 'azurerm'
+    command: 'init'
+    backendServiceArm: '$(AZURE_SUBSCRIPTION)'
+    backendAzureRmResourceGroupName: '$(RESOURCE_GROUP_NAME)'
+    backendAzureRmStorageAccountName: '$(STORAGE_ACCOUNT_NAME)'
+    backendAzureRmContainerName: 'tfstate'
+    backendAzureRmKey: 'terraform.tfstate'
+
+- task: TerraformTaskV4@4
+  inputs:
+    provider: 'azurerm'
+    command: 'apply'
+    environmentServiceNameAzureRM: '$(AZURE_SUBSCRIPTION)'
+    workingDirectory: '$(System.DefaultWorkingDirectory)'
+    commandOptions: |
+      --auto-approve
+      -var="resource_group_name=$(RESOURCE_GROUP_NAME)" 
+      -var="location=$(LOCATION)" 
+      -var="storage_account_name=$(STORAGE_ACCOUNT_NAME)" 
+      -var="aks_cluster_name=$(AKS_CLUSTER_NAME)" 
+      -var="aks_dns_prefix=$(AKS_DNS_PREFIX)" 
+      -var="aks_node_count=$(AKS_NODE_COUNT)" 
+      -var="aks_node_vm_size=$(AKS_NODE_VM_SIZE)"
