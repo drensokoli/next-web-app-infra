@@ -1,31 +1,29 @@
-variable "name" {
-  description = "Name of the AKS cluster"
+variable "resource_group_name" {
   type        = string
+  description = "Resource Group name in Microsoft Azure"
 }
 
 variable "location" {
-  description = "Azure region for the AKS cluster"
   type        = string
+  description = "Resources location in Microsoft Azure"
 }
 
-variable "resource_group_name" {
-  description = "Name of the resource group"
+variable "cluster_name" {
   type        = string
+  description = "AKS name in Microsoft Azure"
 }
 
-variable "dns_prefix" {
-  description = "DNS prefix for the AKS cluster"
+variable "kubernetes_version" {
   type        = string
+  description = "Kubernetes version"
 }
 
-variable "node_count" {
-  description = "Number of nodes in the AKS cluster"
+variable "system_node_count" {
   type        = number
-  default     = 1
+  description = "Number of AKS worker nodes"
 }
 
-variable "node_vm_size" {
-  description = "VM size for AKS nodes"
+variable "node_resource_group" {
   type        = string
-  default     = "Standard_DS2_v2"
+  description = "Resource Group name for cluster resources in Microsoft Azure"
 }
