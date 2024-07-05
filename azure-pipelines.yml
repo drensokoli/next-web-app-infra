@@ -7,16 +7,10 @@ variables:
   - group: terraform-variables
 
 steps:
-- task: AzureCLI@2
-  displayName: 'Install Azure CLI'
+- task: CmdLine@2
+  displayName: Install Azure CLI
   inputs:
-    azureSubscription: 'Azure subscription 1(e6413597-333f-4f40-9c13-00e1912a1910)'
-    scriptType: 'bash'
-    scriptLocation: 'inlineScript'
-    inlineScript: |
-      # Update package list
-      sudo apt-get update
-      curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+    script: 'curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash'
 
 - task: CmdLine@2
   displayName: Install Terraform
