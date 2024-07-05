@@ -8,14 +8,9 @@ variables:
 
 steps:
 - task: CmdLine@2
-  displayName: Install Azure CLI
-  inputs:
-    script: 'curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash'
-
-- task: CmdLine@2
   displayName: Install Terraform
   inputs:
-    script: 'snap install terraform --classic'
+    script: 'sudo snap install terraform --classic'
 
 - task: AzureCLI@2
   displayName: 'Azure Login and Terraform Init'
