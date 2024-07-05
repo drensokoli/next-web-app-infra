@@ -1,38 +1,72 @@
 trigger:
   - main
 
-pool: solaborate-agent-pool
+pool: solaborate-devops-pool
 
 variables:
   - group: terraform-variables
 
 steps:
-- task: TerraformInstaller@0
+- task: AzureCLI@2
+  displayName: 'Install Azure CLI'
   inputs:
-    terraformVersion: 'latest'
+    azureSubscription: 'Azure subscription 1(e6413597-333f-4f40-9c13-00e1912a1910)'
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      # Update package list
+      sudo apt-get update
+      curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
 
-- task: TerraformTaskV4@4
+- task: CmdLine@2
+  displayName: Install Terraform
   inputs:
-    provider: 'azurerm'
-    command: 'init'
-    backendServiceArm: '$(AZURE_SUBSCRIPTION)'
-    backendAzureRmResourceGroupName: '$(RESOURCE_GROUP_NAME)'
-    backendAzureRmStorageAccountName: '$(STORAGE_ACCOUNT_NAME)'
-    backendAzureRmContainerName: 'tfstate'
-    backendAzureRmKey: 'terraform.tfstate'
+    script: 'snap install terraform --classic'
 
-- task: TerraformTaskV4@4
+- task: AzureCLI@2
+  displayName: 'Azure Login and Terraform Init'
   inputs:
-    provider: 'azurerm'
-    command: 'apply'
-    environmentServiceNameAzureRM: '$(AZURE_SUBSCRIPTION)'
-    workingDirectory: '$(System.DefaultWorkingDirectory)'
-    commandOptions: |
-      --auto-approve
-      -var="resource_group_name=$(RESOURCE_GROUP_NAME)" 
-      -var="location=$(LOCATION)" 
-      -var="storage_account_name=$(STORAGE_ACCOUNT_NAME)" 
-      -var="aks_cluster_name=$(AKS_CLUSTER_NAME)" 
-      -var="aks_dns_prefix=$(AKS_DNS_PREFIX)" 
-      -var="aks_node_count=$(AKS_NODE_COUNT)" 
-      -var="aks_node_vm_size=$(AKS_NODE_VM_SIZE)"
+    azureSubscription: 'Azure subscription 1(e6413597-333f-4f40-9c13-00e1912a1910)'
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      # Azure login is handled automatically by the AzureCLI task
+      # Initialize Terraform
+      terraform init
+
+# - task: CmdLine@2
+#   inputs:
+#     script: 'curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash'
+#   displayName: Install Azure CLI
+
+# - task: CmdLine@2
+#   inputs:
+#     script: 'snap install terraform --classic'
+#   displayName: Install Terraform
+
+
+# - task: TerraformTaskV4@4
+#   inputs:
+#     provider: 'azurerm'
+#     command: 'init'
+#     backendServiceArm: '$(AZURE_SUBSCRIPTION)'
+#     backendAzureRmResourceGroupName: '$(RESOURCE_GROUP_NAME)'
+#     backendAzureRmStorageAccountName: '$(STORAGE_ACCOUNT_NAME)'
+#     backendAzureRmContainerName: 'tfstate'
+#     backendAzureRmKey: 'terraform.tfstate'
+
+# - task: TerraformTaskV4@4
+#   inputs:
+#     provider: 'azurerm'
+#     command: 'apply'
+#     environmentServiceNameAzureRM: '$(AZURE_SUBSCRIPTION)'
+#     workingDirectory: '$(System.DefaultWorkingDirectory)'
+#     commandOptions: |
+#       --auto-approve
+#       -var="resource_group_name=$(RESOURCE_GROUP_NAME)" 
+#       -var="location=$(LOCATION)" 
+#       -var="storage_account_name=$(STORAGE_ACCOUNT_NAME)" 
+#       -var="aks_cluster_name=$(AKS_CLUSTER_NAME)" 
+#       -var="aks_dns_prefix=$(AKS_DNS_PREFIX)" 
+#       -var="aks_node_count=$(AKS_NODE_COUNT)" 
+#       -var="aks_node_vm_size=$(AKS_NODE_VM_SIZE)"
