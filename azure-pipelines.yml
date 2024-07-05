@@ -8,18 +8,19 @@ variables:
 
 steps:
 
-- task: AzureCLI@2
-  displayName: Login to Azure
-  inputs:
-    azureSubscription: 'Azure subscription 1(e6413597-333f-4f40-9c13-00e1912a1910)'
-    scriptType: 'bash'
-    scriptLocation: 'inlineScript'
-    inlineScript: 'az login --service-principal -u $(clientID) -p $(clientSecret) -t $(tenantID)'
+# - task: AzureCLI@2
+#   displayName: Login to Azure
+#   inputs:
+#     azureSubscription: 'Azure subscription 1(e6413597-333f-4f40-9c13-00e1912a1910)'
+#     scriptType: 'bash'
+#     scriptLocation: 'inlineScript'
+#     inlineScript: 'az login --service-principal -u $(clientID) -p $(clientSecret) -t $(tenantID)'
 
 - task: CmdLine@2
-  displayName: Initialize Terraform
   inputs:
-    script: 'terraform init'
+    script: |
+      az login --service-principal -u "$(clientID)" --tenant "tenantID"
+      terraform init
 
 # - task: TerraformTaskV4@4
 #   inputs:
