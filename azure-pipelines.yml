@@ -7,32 +7,19 @@ variables:
   - group: terraform-variables
 
 steps:
-- task: CmdLine@2
-  displayName: Install Terraform
-  inputs:
-    script: 'sudo snap install terraform --classic'
 
 - task: AzureCLI@2
-  displayName: 'Azure Login and Terraform Init'
+  displayName: Login to Azure
   inputs:
     azureSubscription: 'Azure subscription 1(e6413597-333f-4f40-9c13-00e1912a1910)'
     scriptType: 'bash'
     scriptLocation: 'inlineScript'
-    inlineScript: |
-      # Azure login is handled automatically by the AzureCLI task
-      # Initialize Terraform
-      terraform init
+    inlineScript: 'az login --service-principal -u $(clientID) -p $(clientSecret) -t $(tenantID)'
 
-# - task: CmdLine@2
-#   inputs:
-#     script: 'curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash'
-#   displayName: Install Azure CLI
-
-# - task: CmdLine@2
-#   inputs:
-#     script: 'snap install terraform --classic'
-#   displayName: Install Terraform
-
+- task: CmdLine@2
+  displayName: Initialize Terraform
+  inputs:
+    script: 'terraform init'
 
 # - task: TerraformTaskV4@4
 #   inputs:
