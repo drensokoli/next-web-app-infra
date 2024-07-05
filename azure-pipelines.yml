@@ -8,6 +8,12 @@ variables:
 
 steps:
 
+- task: CmdLine@2
+  inputs:
+    script: |
+      az login --service-principal -u "$(clientID)" --tenant "$(tenantID)"
+      terraform init
+
 # - task: AzureCLI@2
 #   displayName: Login to Azure
 #   inputs:
@@ -15,12 +21,6 @@ steps:
 #     scriptType: 'bash'
 #     scriptLocation: 'inlineScript'
 #     inlineScript: 'az login --service-principal -u $(clientID) -p $(clientSecret) -t $(tenantID)'
-
-- task: CmdLine@2
-  inputs:
-    script: |
-      az login --service-principal -u "$(clientID)" --tenant "tenantID"
-      terraform init
 
 # - task: TerraformTaskV4@4
 #   inputs:
