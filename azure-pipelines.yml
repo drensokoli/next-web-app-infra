@@ -8,10 +8,19 @@ variables:
 
 steps:
 
-- task: CmdLine@2
+- task: AzureCLI@2
+  displayName: 'Azure Login and Terraform Init'
   inputs:
-    script: |
-      az login --service-principal -u "$(clientID)" -p "$(clientSecret)" --tenant "$(tenantID)"
+    azureSubscription: 'Azure subscription 1(e6413597-333f-4f40-9c13-00e1912a1910)'
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      # Export Terraform variables
+      export TF_VAR_subscription_id=$(subscriptionID)
+      export TF_VAR_client_id=$(clientID)
+      export TF_VAR_client_secret=$(clientSecret)
+      export TF_VAR_tenant_id=$(tenantID)
+      
       terraform init
 
 # - task: AzureCLI@2
