@@ -4,21 +4,30 @@ module "resource_group" {
   location = var.location
 }
 
-module "storage_account" {
-  source              = "./modules/storage_account"
-  depends_on          = [module.resource_group]
-  name                = var.storage_account_name
-  resource_group_name = module.resource_group.name
+module "network" {
+  source              = "./modules/network"
+  number              = "01"
   location            = module.resource_group.location
+  prefix              = var.prefix
+  resource_group_name = module.resource_group.name
 }
 
-module "aks_cluster" {
-  source              = "./modules/aks_cluster"
-  depends_on          = [module.resource_group]
+module "virtual_machines-01" {
+  source              = "./modules/virtual-machines"
+  subnet_id           = module.network.subnet_id
   resource_group_name = module.resource_group.name
+  prefix              = var.prefix
+  number              = "01"
   location            = module.resource_group.location
-  cluster_name        = var.aks_cluster_name
-  kubernetes_version  = "1.28.9"
-  system_node_count   = var.aks_node_count
-  node_resource_group = module.resource_group.name
+  file_path           = "scripts/docker.sh"
+}
+
+module "virtual_machines-02" {
+  source              = "./modules/virtual-machines"
+  subnet_id           = module.network.subnet_id
+  resource_group_name = module.resource_group.name
+  prefix              = var.prefix
+  number              = "02"
+  location            = module.resource_group.location
+  file_path           = "scripts/helm.sh"
 }

@@ -1,7 +1,0 @@
-resource_group_name = "solaborate-westus-rg"
-location = "West Us"
-storage_account_name = "solaboratestorage"
-aks_cluster_name = "solaborate-cluster"
-aks_dns_prefix = "solaboratecluster"
-aks_node_count = 1
-aks_node_vm_size = "Standard_DS2_v2"
